@@ -77,6 +77,11 @@ body {
   opacity: 1;
 }
 
+.editor {
+  padding: 3px;
+  width: 778px;
+  height: 587px;
+}
 /* #form-file-upload {
   height: 16rem;
   width: 28rem;

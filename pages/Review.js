@@ -15,15 +15,16 @@ import Container from '@mui/material/Container';
 import Editor from "../components/Editor";
 import useLocalStorage from '../hooks/useLocalStorage';
 import { useGlobalContext } from '../context/global';
+import RichTextEditor from "react-rte";
 
 
 
 
 
 export default function AddressForm() {
-  const {setPaidAmount,setGcashNumber,setPaymentRestriction,setCancellationRestriction,setEarliestDateRestriction} = useGlobalContext()
+  const { setPaidAmount, setGcashNumber, setPaymentRestriction, setCancellationRestriction, setEarliestDateRestriction } = useGlobalContext()
 
-// amount to be paid
+  // amount to be paid
   const [value, setValue] = React.useState('');
   const [error, setError] = React.useState(false);
   const handleChange = event => {
@@ -36,7 +37,7 @@ export default function AddressForm() {
     }
   };
 
-//phone number
+  //phone number
   const phoneRegex = /^(09|\+639)\d{9}$/
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [errorPhoneNumber, setErrorPhoneNumber] = React.useState(false);
@@ -76,7 +77,7 @@ export default function AddressForm() {
 
   const [earliestBook, setEarliestBook] = React.useState('');
   const [errorEarliestDate, setErrorEarliestDate] = React.useState('');
-  
+
 
   const handleChangeEarliestBook = (event) => {
     setEarliestBook(event.target.value);
@@ -92,9 +93,48 @@ export default function AddressForm() {
     // }
   };
 
-  
- 
-console.log(earliestBook)
+  const [rteValue, setRteValue] = React.useState();
+  const [editorValue, setEditorValue] = React.useState(
+    RichTextEditor.createEmptyValue()
+  );
+
+  const onChange = (editorValue) => {
+    setEditorValue(editorValue);
+    setRteValue(editorValue.toString("markdown"));
+  };
+  console.log(rteValue);
+  const toolbarConfig = {
+    // Optionally specify the groups to display (displayed in the order listed).
+    display: ['INLINE_STYLE_BUTTONS', 'BLOCK_TYPE_BUTTONS', 'LINK_BUTTONS', 'BLOCK_TYPE_DROPDOWN', 'HISTORY_BUTTONS'],
+    INLINE_STYLE_BUTTONS: [
+      { label: 'Bold', style: 'BOLD', className: 'custom-css-class' },
+      { label: 'Italic', style: 'ITALIC' },
+      { label: 'Underline', style: 'UNDERLINE' }
+    ],
+    BLOCK_TYPE_DROPDOWN: [
+      { label: 'Normal', style: 'unstyled' },
+      { label: 'Heading Large', style: 'header-one' },
+      { label: 'Heading Medium', style: 'header-two' },
+      { label: 'Heading Small', style: 'header-three' }
+    ],
+    BLOCK_TYPE_BUTTONS: [
+      { label: 'UL', style: 'unordered-list-item' },
+      { label: 'OL', style: 'ordered-list-item' }
+    ]
+  }
+
+
+  // const style = {
+  //   width: '600px',
+  //   height: '400px',
+  //   border: '1px solid #ccc'
+  // };
+  // const [style, setStyle] = React.useState({ width: '800px', height: '600px' });
+
+
+
+
+  console.log(earliestBook)
 
 
   return (
@@ -124,7 +164,7 @@ console.log(earliestBook)
               <Typography component="b1" variant="b1" sx={{ color: 'black' }} gutterBottom>
                 Booking Price
               </Typography>
-              <Typography component="b1" variant="b1" sx={{ color: 'black', ml: 21}} gutterBottom>
+              <Typography component="b1" variant="b1" sx={{ color: 'black', ml: 21 }} gutterBottom>
                 Receiving GCash number wallet
               </Typography>
             </Box>
@@ -139,9 +179,9 @@ console.log(earliestBook)
                   helperText={error ? 'Please enter a valid amount' : ''}
                   placeholder="0.00"
                   InputProps={{
-                    startAdornment: <InputAdornment position="start">PHP</InputAdornment>,min:0
+                    startAdornment: <InputAdornment position="start">PHP</InputAdornment>, min: 0
                   }}
-                 
+
                 />
               </FormControl>
               <FormControl sx={{ ml: 6, width: 400 }} >
@@ -152,7 +192,7 @@ console.log(earliestBook)
                   error={errorPhoneNumber}
                   helperText={errorPhoneNumber ? 'Please enter a valid phone number' : ''}
                   placeholder="Enter GCash number"
-                  InputProps={{min:0}}
+                  InputProps={{ min: 0 }}
                 />
               </FormControl>
             </Box>
@@ -176,8 +216,8 @@ console.log(earliestBook)
               }}
               value={earliestBook}
               onChange={handleChangeEarliestBook}
-              sx={{ width: '86px', ml: 3, border:errorEarliestDate, borderRadius:2}}
-              inputProps={{min:0,}}
+              sx={{ width: '86px', ml: 3, border: errorEarliestDate, borderRadius: 2 }}
+              inputProps={{ min: 0, }}
               placeholder="0"
             />
             <Typography component="subtitle1" variant="subtitle1" sx={{ color: 'black', ml: 3 }}>days before the booking</Typography>
@@ -200,8 +240,8 @@ console.log(earliestBook)
               }}
               value={cancelDeadline}
               onChange={handleChangeCancelDeadline}
-              sx={{ width: '86px', ml: 3, border: errorCancellationDeadline, borderRadius:2}}
-              inputProps={{min:0}}
+              sx={{ width: '86px', ml: 3, border: errorCancellationDeadline, borderRadius: 2 }}
+              inputProps={{ min: 0 }}
               placeholder="0"
             />
             <Typography component="subtitle1" variant="subtitle1" sx={{ color: 'black', ml: 3 }}>minutes before the booking</Typography>
@@ -219,7 +259,13 @@ console.log(earliestBook)
             Enter guidelines, rules, regulations, or directions for your service
           </Typography>
           <Box sx={{ width: '778px', height: '587px', mt: 2 }}>
-            <Editor />
+            {/* <Editor /> */}
+            <RichTextEditor
+              value={editorValue}
+              onChange={onChange}
+              toolbarConfig={toolbarConfig}
+              className="editor"
+              placeholder="Enter your text here..." />
           </Box>
 
         </Box>

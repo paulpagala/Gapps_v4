@@ -248,6 +248,8 @@ export default function ParkiongArea() {
     slotStatus.push("Active");
   }
 
+  console.log(totalSlots)
+
   // console.log(slotStatus)
   // console.log(parkingSlotNames[indexOfParking])
 

@@ -8,7 +8,7 @@ import Radio from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
-import { Link } from '@mui/material';
+import { Button, Link } from '@mui/material';
 import { useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import copy_logo from "/public/clone,-copy,-document,-file.svg";
@@ -25,48 +25,79 @@ import { useGlobalContext } from '../context/global';
 
 
 export default function PolicyDetails() {
-  const {setParkingAreaName,setParkingAreaAddress,setParkingAreaFloor,setParkingAreaSlots,setParkingSlotNames} = useGlobalContext();
+  const { setParkingAreaName, setParkingAreaAddress, setParkingAreaFloor, setParkingAreaSlots, setParkingSlotNames } = useGlobalContext();
   const [addParking, setAddParking] = React.useState('');
 
   const handleChangeAddParking = (event) => {
     setAddParking(event.target.value);
   };
 
-  const [parkingArea, setParkingArea] = React.useState('');
-
-  const handleChangeParkingArea = (event) => {
-    setParkingArea(event.target.value);
-    setParkingAreaName(event.target.value)
+  const [parkingArea, setParkingArea] = React.useState([]);
+  const handleChangeParkingArea = (index, event) => {
+    const newParkingAreaArray = [...parkingArea]
+    newParkingAreaArray[index] = event.target.value
+    setParkingArea(newParkingAreaArray);
+    setParkingAreaName(newParkingAreaArray)
   };
 
-  const [changeAddress, setChangeAddress] = React.useState('');
-
-  const handleChangeAddress = (event) => {
-    setChangeAddress(event.target.value);
-    setParkingAreaAddress(event.target.value);
+  const [changeAddress, setChangeAddress] = React.useState([]);
+  const handleChangeAddress = (index, event) => {
+    const newParkingAreaAddressArray = [...changeAddress]
+    newParkingAreaAddressArray[index] = event.target.value
+    setChangeAddress(newParkingAreaAddressArray);
+    setParkingAreaAddress(newParkingAreaAddressArray)
   };
 
-  const [areaFloor, setAreaFloor] = React.useState('');
 
-  const handleChangeAreaFloor = (event) => {
-    setAreaFloor(event.target.value);
-    setParkingAreaFloor(event.target.value)
+  const [areaFloorField, setAreaFloorField] = React.useState([]);
+  const [arrayParkingAreaFloor, setArrayParkingAreaFloor] = React.useState([])
+  // const [arrayParkingAreaF]
+
+
+  const handleChangeAreaFloor = (indexParkingArea, indexParkingFloor, event) => {
+    const newFloor = [...areaFloorField]
+    newFloor[indexParkingFloor] = event.target.value
+    setAreaFloorField(newFloor);
+
+
+    const newArrayFloor = [...arrayParkingAreaFloor];
+    newArrayFloor[indexParkingArea] = newFloor;
+    setArrayParkingAreaFloor(newArrayFloor);
+    setParkingAreaFloor(newArrayFloor);
+
   };
 
-  const [numberOfSlots, setNumberOfSlots] = React.useState('');
+  const [numberOfSlots, setNumberOfSlots] = React.useState([]);
+  const [arrayParkingSlots, setArrayParkingSlots] = React.useState([])
 
-  //for integer checking
-  const [error, setError] = React.useState(false);
-  const handleChangeNumberOfSlots = (event) => {
-    setNumberOfSlots(event.target.value);
-    setParkingAreaSlots(event.target.value)
-    if (!Number.isInteger(Number(event.target.value))) {
-      setError(true);
-    } else {
-      setError(false);
-    }
+  const handleChangeNumberOfSlots = (indexParkingArea, indexParkingFloor, event) => {
+    // setNumberOfSlots(event.target.value);
+    // setParkingAreaSlots(event.target.value)
+    const newSlots = [...numberOfSlots]
+    newSlots[indexParkingFloor] = event.target.value
+    setNumberOfSlots(newSlots);
+
+
+    const newArraySlots = [...arrayParkingSlots];
+    newArraySlots[indexParkingArea] = newSlots;
+    setArrayParkingSlots(newArraySlots);
+    setParkingAreaSlots(newArraySlots);
   };
 
+  // const arrayParkingFields = arrayParkingSlots.map((x) =>
+  //   x.map((element) => Array.from({ length: element }, (_, i) => i + 1))
+  // );
+
+//  [[2,1],[3,2]] to [[[1,2],[1]],[[1,2,3],[1,2]]]
+const arrayParkingFields = arrayParkingSlots.map(subarray => {
+  return subarray.map(value => [[value], subarray]);
+});
+
+const arrayParking = arrayParkingFields.map((x) =>
+    x.map((y) =>
+      y.map((element) => Array.from({ length: element }, (_, i) => i + 1))
+    )
+  );
 
   //To add name to slots
   const [state, setState] = React.useState({
@@ -88,34 +119,88 @@ export default function PolicyDetails() {
     array.push(i);
   }
 
-    const [fieldValues, setFieldValues] = React.useState([]);
+  // const [fieldValues, setFieldValues] = React.useState([]);
+  
 
-    // Function to handle changes to the text field values
-    const handleFieldValuesChange = (index, event) => {
-      // Create a copy of the field values array
-      const newFieldValues = [...fieldValues];
+  // // Function to handle changes to the text field values
+  // const handleFieldValuesChange = (index, event) => {
+  //   // Create a copy of the field values array
+  //   const newFieldValues = [...fieldValues];
 
-      // Update the value at the specified index
-      newFieldValues[index] = event.target.value;
+  //   // Update the value at the specified index
+  //   newFieldValues[index] = event.target.value;
 
-      // Update the state variable with the new field values array
-      setFieldValues(newFieldValues);
-      setParkingSlotNames(newFieldValues);
-    };
-    // Use the map method to create TextField components
-    let textFields = array.map((value, index) => (
-      <Box key={index} sx={{ mb: 3, display: 'flex', flexDirection: "column", alignItems: 'left', alignContent: 'stretch', ml: 2 }}>
-        <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom>Slot name {index + 1}</Typography>
-        <TextField
-          key={index + 1}
-          onChange={(event) => handleFieldValuesChange(index, event)}
-          variant="outlined"
-          sx={{ backgroundColor: 'white', width: 326 }}
-          placeholder="Enter Slot Name"
-        />
-      </Box>
-    ));
+  //   // Update the state variable with the new field values array
+  //   setFieldValues(newFieldValues);
+  //   setParkingSlotNames(newFieldValues);
+  // };
+  const [fieldValues, setFieldValues] = React.useState([]);
+  const [arrayFields, setArrayFields] = React.useState([]);
+  const [parkingAreaFields, setparkingAreaFields] = React.useState([]);
 
+  // Function to handle changes to the text field values
+  const handleFieldValuesChange = (
+    indexParkingArea,
+    indexParkingFloor,
+    indexFields,
+    event
+  ) => {
+    // Create a copy of the field values array
+
+    const newFieldValues = [...fieldValues];
+
+    // Update the value at the specified index
+    newFieldValues[indexFields] = event.target.value;
+
+    // Update the state variable with the new field values array
+    setFieldValues(newFieldValues);
+
+    const newArray = [...arrayFields];
+    newArray[indexParkingFloor] = newFieldValues;
+    setArrayFields(newArray);
+
+    const newParking = [...parkingAreaFields];
+    newParking[indexParkingArea] = newArray;
+    setparkingAreaFields(newParking);
+    setParkingSlotNames(newParking)
+  };
+  // Use the map method to create TextField components
+  // let textFields = arrayParkingFields[indexParkingFloor].map((value, index) => (
+  //   <Box key={index} sx={{ mb: 3, display: 'flex', flexDirection: "column", alignItems: 'left', alignContent: 'stretch', ml: 2 }}>
+  //     <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom>Slot name {index + 1}</Typography>
+  //     <TextField
+  //       key={index + 1}
+  //       onChange={(event) => handleFieldValuesChange(index, event)}
+  //       variant="outlined"
+  //       sx={{ backgroundColor: 'white', width: 326 }}
+  //       placeholder="Enter Slot Name"
+  //     />
+  //   </Box>
+  // ));
+
+  // let textFields = arrayParkingFields[indexParkingFloor].map((indexFields) => (
+  //   <Box key={index} sx={{ mb: 3, display: 'flex', flexDirection: "column", alignItems: 'left', alignContent: 'stretch', ml: 2 }}>
+  //     <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom>Slot name {indexFields + 1}</Typography>
+  //     <TextField
+  //       key={index + 1}
+  //       onChange={(event) => handleFieldValuesChange( 
+  //         indexParkingArea,
+  //         indexParkingFloor,
+  //         indexFields, event)}
+  //       variant="outlined"
+  //       sx={{ backgroundColor: 'white', width: 326 }}
+  //       placeholder="Enter Slot Name"
+  //     />
+  //   </Box>
+  // ));
+
+
+
+  
+
+
+
+// FOR DUPLICATES
   const duplicates = fieldValues.filter((value, index) => fieldValues.indexOf(value) !== index);
 
   const seenValues = {};
@@ -135,8 +220,9 @@ export default function PolicyDetails() {
       seenValues[element] = i;
     }
   }
+// FOR DUPLICATES
 
-
+// FOR BULK
   const { getRootProps, getInputProps, open, acceptedFiles } = useDropzone({
     // Disable click and keydown behavior
     noClick: true,
@@ -163,6 +249,176 @@ export default function PolicyDetails() {
       this.parentElement.style.display = 'none';
     });
   }
+//FOR BULK
+
+
+  const [newParkingArea, setNewParkingArea] = React.useState([])
+  const addParkingArea = () => {
+    setNewParkingArea([...newParkingArea, newParkingArea.length + 1])
+  }
+
+  const [newParkingFloor, setNewParkingFloor] = React.useState([])
+  const addParkingFloor = () => {
+    setNewParkingFloor([...newParkingFloor, newParkingFloor.length + 1])
+  }
+
+  // const dictionary = {};
+  // for (let i = 0; i < parkingArea.length; i++) {
+  //   dictionary[parkingArea[i]] = arrayParkingAreaFloor[i];
+  // }
+
+  let createParkingAreas = newParkingArea.map((indexParkingArea) => (
+    <Box sx={{ mb: "4%" }} >
+      <Paper variant="outlined" sx={{ my: { md: 0, lg: 0 }, p: { md: 2, lg: 3 } }}>
+        <Box sx={{ ml: 3 }}>
+          <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom> Parking area name </Typography>
+          <TextField
+            id="outlined-address"
+            // label="Address (optional)"
+            // value={parkingArea}
+            onChange={(event) => handleChangeParkingArea(indexParkingArea - 1, event)}
+            variant="outlined"
+            sx={{ width: 500 }}
+            placeholder="Enter parking area name"
+          />
+        </Box>
+        <Box sx={{ ml: 3, mt: 2 }}>
+          <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom> Address <em>(optional)</em></Typography>
+          <TextField
+            id="outlined-parkingarea"
+            // label="Address (optional)"
+            // value={changeAddress}
+            onChange={(event) => handleChangeAddress(indexParkingArea-1, event)}
+            variant="outlined"
+            sx={{ width: 900 }}
+            placeholder="Enter address"
+          />
+        </Box>
+        <Box key={indexParkingArea-1}>
+          {newParkingFloor.map((indexParkingFloor) => (
+            <Paper variant="outlined" sx={{ mr: 3, ml: 3, my: { md: 3, lg: 5 }, p: { md: 2, lg: 3 }, backgroundColor: '#FAFAFA' }} key={indexParkingFloor}>
+              <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom>Area Floor</Typography>
+              <TextField
+                id="outlined-AreaFloor"
+                label="Area Floor"
+                // value={areaFloor}
+                // onChange={handleChangeAreaFloor}
+                onChange={(event) =>
+                  handleChangeAreaFloor(
+                    indexParkingArea-1,
+                    indexParkingFloor-1,
+                    // indexParkingFloorField-1,
+                    event
+                  )
+                }
+                variant="outlined"
+                placeholder="E.g. P1"
+                sx={{ backgroundColor: '#FFFFFF' }}
+
+              />
+              <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom>Number of slots</Typography>
+              <TextField
+                id="outlined-number"
+                // label="Number of Slots"
+                type='number'
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                // value={numberOfSlot}
+                onChange={(event) =>
+                  handleChangeNumberOfSlots(
+                    indexParkingArea-1,
+                    indexParkingFloor-1,
+                    // indexParkingFloorField-1,
+                    event
+                  )
+                }
+
+
+                sx={{ backgroundColor: '#FFFFFF' }}
+                inputProps={{ min: 0 }}
+                placeholder="0"
+              />
+              <br />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={slots} onChange={handleChangeSlots} name="slots" />
+                }
+                label="Add name to slots"
+              />
+
+              {slots ? (
+                <Accordion defaultExpanded>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                    sx={{ backgroundColor: '#333E5D' }}
+                  >
+                    {/* <Typography sx={{ color: 'white' }}>{arrayParkingAreaFloor[indexParkingArea-1][indexParkingFloor-1]} slot names</Typography> */}
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Paper variant="outlined" sx={{ mr: 5, ml: 5, my: { md: 1, lg: 3 }, p: { md: 2, lg: 3 }, backgroundColor: '#EFEFEF' }}>
+                      {/* {textFields} */}
+                      {arrayParking[indexParkingArea-1][indexParkingFloor-1][0].map((indexFields) => (
+                        <Box key={indexFields} sx={{ mb: 3, display: 'flex', flexDirection: "column", alignItems: 'left', alignContent: 'stretch', ml: 2 }}>
+                          <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom>Slot name {indexFields}</Typography>
+                          <TextField
+                            key={indexFields }
+                            onChange={(event) => handleFieldValuesChange(
+                              indexParkingArea-1,
+                              indexParkingFloor-1,
+                              indexFields-1, event)}
+                            variant="outlined"
+                            sx={{ backgroundColor: 'white', width: 326 }}
+                            placeholder="Enter Slot Name"
+                          />
+                        </Box>
+                      ))}
+
+                      <Box sx={{ display: 'flex', justifyContent: 'center', color: 'red' }}>
+
+
+
+                        {/* {duplicates.length > 0 && <Typography>There are duplicate values in the slot names!</Typography>} */}
+                        {/* {duplicateIndexes} */}
+                        {/* {duplicates} */}
+                      </Box>
+                    </Paper>
+                  </AccordionDetails>
+                </Accordion>)
+                :
+                null}
+            </Paper>
+          ))}
+        </Box>
+
+        {/* </Box> */}
+        <Button variant='text' sx={{ textDecoration: 'underline', ml: "80%" }} onClick={addParkingFloor}>
+          + Add another parking floor
+        </Button>
+      </Paper>
+
+
+    </Box>
+  ))
+  // console.log(newParkingArea)
+  // console.log(parkingArea)
+  // console.log(changeAddress)
+  // console.log(arrayParkingAreaFloor)
+
+  // const dictionary = {};
+  // for (let i = 0; i < parkingArea.length; i++) {
+  //   dictionary[parkingArea[i]] = arrayParkingAreaFloor[i];
+  // }
+  // // console.log(arrayParkingAreaFloor)
+  // console.log(dictionary)
+  // console.log(arrayParkingSlots)
+  // console.log(arrayParking)
+  // console.log(arrayParkingAreaFloor)
+  // console.log(indexParkingArea)
+  console.log(parkingAreaFields)
+  // console.log(newParkingArea)
 
 
   return (
@@ -189,101 +445,9 @@ export default function PolicyDetails() {
 
       {addParking === "list" ?
         (
-          <div>
-            <Paper variant="outlined" sx={{ my: { md: 0, lg: 0 }, p: { md: 2, lg: 3 } }}>
-              <Box sx={{ ml: 3 }}>
-                <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom> Parking area name </Typography>
-                <TextField
-                  id="outlined-address"
-                  // label="Address (optional)"
-                  value={parkingArea}
-                  onChange={handleChangeParkingArea}
-                  variant="outlined"
-                  sx={{ width: 500 }}
-                  placeholder="Enter parking area name"
-                />
-              </Box>
-              <Box sx={{ ml: 3, mt: 2 }}>
-                <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom> Address <em>(optional)</em></Typography>
-                <TextField
-                  id="outlined-parkingarea"
-                  // label="Address (optional)"
-                  value={changeAddress}
-                  onChange={handleChangeAddress}
-                  variant="outlined"
-                  sx={{ width: 900 }}
-                  placeholder="Enter address"
-                />
-              </Box>
-
-              <Paper variant="outlined" sx={{ mr: 3, ml: 3, my: { md: 3, lg: 5 }, p: { md: 2, lg: 3 }, backgroundColor: '#FAFAFA' }}>
-                <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom>Area Floor</Typography>
-                <TextField
-                  id="outlined-AreaFloor"
-                  // label="Area Floor"
-                  value={areaFloor}
-                  onChange={handleChangeAreaFloor}
-                  variant="outlined"
-                  placeholder="E.g. P1"
-                  sx={{ backgroundColor: '#FFFFFF' }}
-
-                />
-
-                <Typography variant="subtitle1" sx={{ color: 'black' }} gutterBottom>Number of slots</Typography>
-                <TextField
-                  id="outlined-number"
-                  // label="Number of Slots"
-                  type='number'
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  value={numberOfSlots}
-                  onChange={handleChangeNumberOfSlots}
-                  error={error}
-                  helperText={error ? 'Please enter a valid amount' : ''}
-                  sx={{ backgroundColor: '#FFFFFF' }}
-                  inputProps={{ min: 0 }}
-                  placeholder="0"
-                />
-                <br />
-                <FormControlLabel
-                  control={
-                    <Checkbox checked={slots} onChange={handleChangeSlots} name="slots" />
-                  }
-                  label="Add name to slots"
-                />
-
-                {slots ? (
-                  <Accordion defaultExpanded>
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
-                      aria-controls="panel1a-content"
-                      id="panel1a-header"
-                      sx={{ backgroundColor: '#333E5D' }}
-                    >
-                      <Typography sx={{ color: 'white' }}>{areaFloor} slot names</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Paper variant="outlined" sx={{ mr: 5, ml: 5, my: { md: 1, lg: 3 }, p: { md: 2, lg: 3 }, backgroundColor: '#EFEFEF' }}>
-                        {textFields}
-                        <Box sx={{ display: 'flex', justifyContent: 'center', color: 'red' }}>
-                          {duplicates.length > 0 && <Typography>There are duplicate values in the slot names!</Typography>}
-                          {/* {duplicateIndexes} */}
-                          {/* {duplicates} */}
-                        </Box>
-                      </Paper>
-                    </AccordionDetails>
-                  </Accordion>)
-                  :
-                  null}
-
-              </Paper>
-
-
-            </Paper>
-
-
-          </div>
+          <Box>
+            {createParkingAreas}
+          </Box>
         )
         : null
       }
@@ -322,6 +486,10 @@ export default function PolicyDetails() {
           </Paper>)
         : null
       }
+
+      <Button variant='text' sx={{ textDecoration: 'underline' }} onClick={addParkingArea}>
+        + Add another parking area
+      </Button>
 
     </React.Fragment>
   );

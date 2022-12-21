@@ -32,6 +32,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router';
 import { useGlobalContext } from '../context/global';
 import parkingdashboard_image_source from "../public/gaccessillustration.svg"
+// import Button from '@mui/material/Button';
 
 
 
@@ -162,8 +163,13 @@ export default function ParkingDashboard() {
   }
   
   const rows = [
-    createData(parkingAreaName, parkingAreaAddress, 'Active', 'pj'),
+    // createData(parkingAreaName, parkingAreaAddress, 'Active', 'pj'),
   ];
+
+  // const bookedRow = [] 
+  for (let i=0; i < parkingAreaName.length ; i++) {
+    rows.push(createData(parkingAreaName[i], parkingAreaAddress[i], 'Active', 'pj'));
+  }
 
 
 
@@ -173,6 +179,15 @@ export default function ParkingDashboard() {
 
   function redirectToReview() {
     router.push('/EditReview')
+  }
+
+  function routeToParkingArea(index){
+    router.push({
+      pathname:'/parkingArea',
+      query:{
+        index
+      }
+    })
   }
  
 
@@ -296,7 +311,7 @@ export default function ParkingDashboard() {
 
                 <StyledTableRow key={row.parkingAreaName}>
                   <StyledTableCell component="th" scope="row" sx={{ fontSize: 16 }}>
-                    <Link href='/parkingArea' style={{ textDecoration: 'none', color: 'black' }}>{row.parkingAreaName ? row.parkingAreaName : "Not Specified"}</Link>
+                    <Button style={{ textDecoration: 'none', color: 'black' }} onClick={()=>routeToParkingArea(row.parkingAreaName)}>{row.parkingAreaName ? row.parkingAreaName : "Not Specified"}</Button>
                   </StyledTableCell>
                   {row.address ? 
                   (<StyledTableCell align="left" sx={{ fontSize: 16}}>{row.address}</StyledTableCell>) : 

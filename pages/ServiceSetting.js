@@ -23,11 +23,12 @@ import { useGlobalContext } from '../context/global';
 
 
 export default function ServiceSetting() {
-  const {setCheckInOptions,setCheckInRestriction,setCheckInAndOutRestriction,setDailyCheckInRestriction,setDailyCheckInAndOutRestriction} = useGlobalContext();
+  const {setCheckInOptions,setCheckInRestriction,setCheckInAndOutRestriction,setDailyCheckInRestriction,setDailyCheckInAndOutRestriction,setCalendarRestriction} = useGlobalContext();
   const [weekday, setWeekday] = React.useState([]);
 
   const handleWeekday = (event, newWeekday) => {
     setWeekday(newWeekday);
+    setCalendarRestriction(newWeekday)
   };
 
 
@@ -145,7 +146,7 @@ export default function ServiceSetting() {
           key={index}
           labelId="demo-simple-select-autowidth-label"
           id="demo-simple-select-autowidth-label"
-          value={bookingScheduleStart[index]}
+          // value={bookingScheduleStart[index]}
           onChange={(event) => handleChangeBookingScheduleStart(index, event)}
           label="Select time"
           sx={{ width: 150 }}
@@ -161,7 +162,7 @@ export default function ServiceSetting() {
           key={index}
           labelId="demo-simple-select-autowidth-label"
           id="demo-simple-select-autowidth-label"
-          value={bookingScheduleEnd[index]}
+          // value={bookingScheduleEnd[index]}
           onChange={(event) => handleChangeBookingScheduleEnd(index, event)}
           label="Select time"
           sx={{ width: 150 }}

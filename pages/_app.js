@@ -27,16 +27,17 @@ function MyApp({ Component, pageProps }) {
  const [checkInAndOutRestriction, setCheckInAndOutRestriction] = useState(false);
  const [dailyCheckInRestriction, setDailyCheckInRestriction] = useState('');
  const [dailyCheckInAndOutRestriction, setDailyCheckInAndOutRestriction] = useState('');
- const [parkingAreaName, setParkingAreaName] = useState('')
- const [parkingAreaAddress , setParkingAreaAddress ] = useState('') 
- const [parkingAreaFloor, setParkingAreaFloor] = useState('')
- const [parkingAreaSlots, setParkingAreaSlots] = useState('')
+ const [parkingAreaName, setParkingAreaName] = useState([])
+ const [parkingAreaAddress , setParkingAreaAddress ] = useState([]) 
+ const [parkingAreaFloor, setParkingAreaFloor] = useState([])
+ const [parkingAreaSlots, setParkingAreaSlots] = useState([])
  const [parkingSlotNames, setParkingSlotNames] = useState([])
  const [paidAmount, setPaidAmount] = useState('')
  const [gcashNumber, setGcashNumber] = useState('')
  const [paymentRestriction, setPaymentRestriction] = useState('')
  const [cancellationRestriction, setCancellationRestriction] = useState('')
  const [earliestDateRestriction, setEarliestDateRestriction] = useState('') 
+ const [calendarRestriction, setCalendarRestriction] = useState([])
 
 
   
@@ -76,7 +77,9 @@ function MyApp({ Component, pageProps }) {
       cancellationRestriction,
       setCancellationRestriction,
       earliestDateRestriction,
-      setEarliestDateRestriction
+      setEarliestDateRestriction,
+      calendarRestriction,
+      setCalendarRestriction
       }}>
     <ResponsiveAppBar />
     <Component {...pageProps} />

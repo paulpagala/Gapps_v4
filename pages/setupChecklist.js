@@ -63,7 +63,8 @@ export default function Checkout() {
     dailyCheckInRestriction,
     dailyCheckInAndOutRestriction,
     paidAmount,
-    gcashNumber
+    gcashNumber,
+    calendarRestriction
   } = useGlobalContext();
   const [activeStep, setActiveStep] = React.useState(0);
   const handleNext = () => {
@@ -106,12 +107,13 @@ export default function Checkout() {
 if (activeStep===3) {
   // useEffect(() => {
   //   const getData = () => {
+    parkingAreaName.map((parkingArea,index)=>(
       postParkingArea('https://zh66xn42vk.execute-api.ap-southeast-1.amazonaws.com/stage/parkingarea',
         {
-          "parkingArea": parkingAreaName,
-          "parkingAddress": parkingAreaAddress,
-          "dedicateSlots":parseInt(parkingAreaSlots),
-          "slots": parseInt(parkingAreaSlots),
+          "parkingArea": parkingArea,
+          "parkingAddress": parkingAreaAddress[index],
+          "dedicateSlots":parseInt(parkingAreaSlots[index].reduce((accumulator,currentValue)=>accumulator + parseInt(currentValue, 10), 0)),
+          "slots": parseInt(parkingAreaSlots[index].reduce((accumulator,currentValue)=>accumulator + parseInt(currentValue, 10), 0)),
           "paymentRestriction" : paymentRestriction,
           "paymentAmount": paidAmount,
           "gcashNumber": gcashNumber,
@@ -121,15 +123,19 @@ if (activeStep===3) {
           "checkInHealthRestriction" : checkInRestriction,
           "checkInAndOutHealthRestriction" : checkInAndOutRestriction,
           "dailyCheckInRestriction" : dailyCheckInRestriction,
-          "dailyCheckInAndOutRestriction" : dailyCheckInAndOutRestriction
+          "dailyCheckInAndOutRestriction" : dailyCheckInAndOutRestriction,
+          "calendarRestriction":calendarRestriction
         })
         .then((data) => {
           console.log(data); // JSON data parsed by `data.json()` call
-        });
+        })
+    ))
+      
   //   };
   //   getData();
   // }, []);
 }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -214,7 +220,7 @@ if (activeStep===3) {
             {getStepContent(activeStep)}
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               {activeStep !== 0 && (
-                <Button onClick={handleBack} sx={{ mt: 3, mr: '88%', }}>
+                <Button variant="contained" onClick={handleBack} sx={{ mt: 3, mr: '88%', }}>
                   Previous
                 </Button>
               )}
